@@ -510,9 +510,7 @@ def process_date(message):
     user_data[chat_id]['points'] = total_score
     user_data[chat_id]['date'] = now 
     user_data[chat_id]['risk_level'] = risk_level
-  
-
-
+    user_data[chat_id]['x'] = now  # Ensure x is defined as the current datetime
 
     query = """INSERT INTO appointments (name, contact, address, age, weight, appointment_date,gender,pregnancy_status,days,prior_visit,points,date,problem,risk_level)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s)"""
@@ -562,15 +560,14 @@ def process_date(message):
         'pregnancy_status': user_data[chat_id].get('pregnancy_status', 'N/A'),
         'days': user_data[chat_id].get('days', 0),
         'prior_visit': user_data[chat_id]['prior_visit'],
-        'total_score': user_data[chat_id].get('total_score', 0),
-        'x': user_data[chat_id]['x'].strftime('%Y-%m-%d %H:%M:%S')
-        
-
-
+        'points': total_score,  # Use points instead of total_score to match the database field
+        'problem': user_data[chat_id].get('problem', 'N/A'),  # Add problem field
+        'risk_level': risk_level,  # Add risk_level field
+        'date': now.strftime('%Y-%m-%d %H:%M:%S')  # Use date instead of x
     }
 
     try:
-        response = requests.post("http://127.0.0.1:5000/notify", json=payload)
+        response = requests.post("http://127.0.0.1:5001/notify", json=payload)  # Update port to 5001 to match Flask app
         if response.status_code == 200:
             bot.send_message(chat_id, "✅ Appointment saved and sent to hospital system.")
         else:
