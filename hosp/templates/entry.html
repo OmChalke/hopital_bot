@@ -1,0 +1,108 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B600%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Clinic Patient Form</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+    :root {
+      --primary-color: #3d98f4;
+      --primary-text-color: #0d141c;
+      --secondary-text-color: #49739c;
+      --border-color: #cedbe8;
+      --background-color: #f8fafc;--input-background-color: #ffffff;--accent-color: #e0f2fe;}
+    .form-input {
+      @apply w-full rounded-lg border border-[var(--border-color)] bg-[var(--input-background-color)] p-3 text-sm text-[var(--primary-text-color)] placeholder-[var(--secondary-text-color)] focus:border-[var(--primary-color)] focus:ring-1 focus:ring-[var(--primary-color)] transition-colors duration-200;
+    }
+    .form-label {
+      @apply text-sm font-medium text-[var(--primary-text-color)] mb-1.5;
+    }
+    .nav-link {
+      @apply text-[var(--primary-text-color)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors duration-200;
+    }
+  </style>
+</head>
+<body class="bg-[var(--background-color)]" style="font-family: Inter, 'Noto Sans', sans-serif;">
+<div class="relative flex min-h-screen flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-white px-6 sm:px-10 py-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="text-[var(--primary-color)]">
+<svg class="size-7" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M12.0799 24L4 19.2479L9.95537 8.75216L18.04 13.4961L18.0446 4H29.9554L29.96 13.4961L38.0446 8.75216L44 19.2479L35.92 24L44 28.7521L38.0446 39.2479L29.96 34.5039L29.9554 44H18.0446L18.04 34.5039L9.95537 39.2479L4 28.7521L12.0799 24Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-[var(--primary-text-color)] text-xl font-semibold tracking-tight">ClinicApp</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="nav-link" href="#">Dashboard</a>
+<a class="nav-link" href="#">Patients</a>
+<a class="nav-link" href="#">Appointments</a>
+<a class="nav-link" href="#">Billing</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-slate-100 hover:bg-slate-200 text-[var(--secondary-text-color)] transition-colors duration-200">
+<div data-icon="Bell" data-size="20px" data-weight="regular">
+<svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
+<path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
+</svg>
+</div>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-slate-200" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpTc1KWIT5MpGu1rI40A7IDYU6VK5Cz0H1gWhcqYjgBnvSr9JwKHKQJjfw5Pc_lzpIVIkprTQGwQBA8Ki6WAaKJioYyNC7U95B4EKdL8nGVxV19IzqMr4b-YfqPUnnUIRmyGmNrzO7IOSO9TzhR6gNbxuudgr_0TxdRsLlLLlY47fFXHgOH4OsEXYSXHKRNFrngZCQS37DQ0HsdhOcX5_6Llh30dkW60fdjJ2q3RVRWbDAw_4SsZN9C56Ba1RKq-WqPdgfmWJloYxs");'></div>
+</div>
+</header>
+<main class="flex flex-1 justify-center py-8 px-4 sm:px-6 lg:px-8">
+<div class="w-full max-w-2xl space-y-8">
+<div>
+<h1 class="text-3xl font-bold tracking-tight text-[var(--primary-text-color)] sm:text-4xl">Patient Information</h1>
+<p class="mt-2 text-sm text-[var(--secondary-text-color)]">Fill in the details below to add a new patient.</p>
+</div>
+<form action="patient" method="POST" class="mt-8 space-y-6 bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+<div>
+<label class="form-label" for="patient-name">Patient Name</label>
+<input class="form-input h-12" id="patient_name" name="patient_name" placeholder="Enter patient's full name" type="text"/>
+</div>
+<div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+<div>
+<label class="form-label" for="age">Age</label>
+<input class="form-input h-12" id="age" name="age" placeholder="Enter age" type="number"/>
+</div>
+<div>
+<label class="form-label" for="weight">Weight (kg)</label>
+<input class="form-input h-12" id="weight" name="weight" placeholder="Enter weight" step="0.1" type="number"/>
+</div>
+</div>
+<div>
+<label class="form-label" for="address">Address</label>
+<textarea class="form-input min-h-28" id="address" name="address" placeholder="Enter patient's address" rows="3"></textarea>
+</div>
+<div>
+<label class="form-label" for="disease">Disease</label>
+<input class="form-input h-12" id="disease" name="disease" placeholder="Enter patient's disease" type="text"/>
+</div>
+<div>
+<label class="form-label" for="assigned-doctor">Assigned Doctor</label>
+<select class="form-input h-12 appearance-none bg-no-repeat bg-right pr-8" id="assigned-doctor" name="assigned-doctor" style="background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27M6 8l4 4 4-4%27/%3e%3c/svg%3e');">
+<option value="">Select doctor</option>
+<option value="dr_smith">Dr. Smith</option>
+<option value="dr_jones">Dr. Jones</option>
+<option value="dr_patel">Dr. Patel</option>
+</select>
+</div>
+<div>
+<label class="form-label" for="doctor-description">Doctor's Description</label>
+<textarea class="form-input min-h-28" id="doctor_description" name="doctor_description" placeholder="Brief description or notes about the doctor" rows="3"></textarea>
+</div>
+<div class="flex justify-end pt-4">
+<button class="flex items-center justify-center rounded-lg bg-[var(--primary-color)] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary-color)] transition-colors duration-200" type="submit">
+                Submit Patient Details
+              </button>
+</div>
+</form>
+</div>
+</main>
+</div>
+</div>
+
+</body></html>

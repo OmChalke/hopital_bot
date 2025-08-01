@@ -1,0 +1,152 @@
+<html>
+  <head>  
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+
+    <title>Stitch Design</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden" style='font-family: "Plus Jakarta Sans", "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#f4f2f0] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#181311]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M24 4C25.7818 14.2173 33.7827 22.2182 44 24C33.7827 25.7818 25.7818 33.7827 24 44C22.2182 33.7827 14.2173 25.7818 4 24C14.2173 22.2182 22.2182 14.2173 24 4Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-[#181311] text-lg font-bold leading-tight tracking-[-0.015em]">Foodie</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex items-center gap-9">
+              <a class="text-[#181311] text-sm font-medium leading-normal" href="#">Home</a>
+              <a class="text-[#181311] text-sm font-medium leading-normal" href="#">Menu</a>
+              <a class="text-[#181311] text-sm font-medium leading-normal" href="#">Deals</a>
+              <a class="text-[#181311] text-sm font-medium leading-normal" href="#">Contact</a>
+            </div>
+            <div class="flex gap-2">
+              <button
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#f4f2f0] text-[#181311] text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Login</span>
+              </button>
+              <button
+                class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 bg-[#f4f2f0] text-[#181311] gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5"
+              >
+                <div class="text-[#181311]" data-icon="ShoppingCart" data-size="20px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M222.14,58.87A8,8,0,0,0,216,56H54.68L49.79,29.14A16,16,0,0,0,34.05,16H16a8,8,0,0,0,0,16h18L59.56,172.29a24,24,0,0,0,5.33,11.27,28,28,0,1,0,44.4,8.44h45.42A27.75,27.75,0,0,0,152,204a28,28,0,1,0,28-28H83.17a8,8,0,0,1-7.87-6.57L72.13,152h116a24,24,0,0,0,23.61-19.71l12.16-66.86A8,8,0,0,0,222.14,58.87ZM96,204a12,12,0,1,1-12-12A12,12,0,0,1,96,204Zm96,0a12,12,0,1,1-12-12A12,12,0,0,1,192,204Zm4-74.57A8,8,0,0,1,188.1,136H69.22L57.59,72H206.41Z"
+                    ></path>
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+            <h2 class="text-[#181311] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Create Your Account</h2>
+           <form action="/signup_submit" method="POST">    
+              <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+                <label class="flex flex-col min-w-40 flex-1">
+                  <input
+                    name="username"
+                    placeholder="Username"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#181311] focus:outline-0 focus:ring-0 border-none bg-[#f4f2f0] focus:border-none h-14 placeholder:text-[#896f61] p-4 text-base font-normal leading-normal"
+                    value=""
+                />
+              </label>
+            </div>
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label class="flex flex-col min-w-40 flex-1">
+                <input
+                  name="email"
+                  placeholder="Email"
+                  class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#181311] focus:outline-0 focus:ring-0 border-none bg-[#f4f2f0] focus:border-none h-14 placeholder:text-[#896f61] p-4 text-base font-normal leading-normal"
+                  value=""
+                />
+              </label>
+            </div>
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label class="flex flex-col min-w-40 flex-1">
+                <div class="flex w-full flex-1 items-stretch rounded-xl">
+                  <input
+                    name="password"
+                    type="password"
+                    placeholder="Enter Password"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#181311] focus:outline-0 focus:ring-0 border-none bg-[#f4f2f0] focus:border-none h-14 placeholder:text-[#896f61] p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal"
+                    value=""
+                  />
+                  <div
+                    class="text-[#896f61] flex border-none bg-[#f4f2f0] items-center justify-center pr-4 rounded-r-xl border-l-0"
+                    data-icon="Eye"
+                    data-size="24px"
+                    data-weight="regular"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                      <path
+                        d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label class="flex flex-col min-w-40 flex-1">
+                <div class="flex w-full flex-1 items-stretch rounded-xl">
+                  <input
+                    name="confirm_password"
+                    type="password"
+                    placeholder="Confirm Password"
+                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#181311] focus:outline-0 focus:ring-0 border-none bg-[#f4f2f0] focus:border-none h-14 placeholder:text-[#896f61] p-4 rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal"
+                    value=""
+                  />
+                  <div
+                    class="text-[#896f61] flex border-none bg-[#f4f2f0] items-center justify-center pr-4 rounded-r-xl border-l-0"
+                    data-icon="Eye"
+                    data-size="24px"
+                    data-weight="regular"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                      <path
+                        d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="flex flex-col gap-3 p-4">
+              <div class="flex gap-6 justify-between"><p class="text-[#181311] text-base font-medium leading-normal">Password Strength</p></div>
+              <div class="rounded bg-[#e6dfdb]"><div class="h-2 rounded bg-[#181311]" style="width: 60%;"></div></div>
+              <p class="text-[#896f61] text-sm font-normal leading-normal">Strong</p>
+            </div>
+            <div class="flex px-4 py-3">
+              <button
+                type="submit"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 flex-1 bg-[#ed6b2a] text-white text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="truncate">Sign Up</span>
+              </button>
+            </div>
+            </form>
+            <p class="text-[#896f61] text-sm font-normal leading-normal pb-3 pt-1 px-4 text-center underline">Already have an account? Login here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,263 @@
+def calculate_grade(average):
+    if average >= 90:
+        return "A"
+    elif average >= 80:
+        return "B"
+    elif average >= 70:
+        return "C"
+    elif average >= 60:
+        return "D"
+    else:
+        return "F"
+
+students=[]
+students_data={}
+
+def add_student():
+
+    while True:
+            try:
+                num_students = int(input("Enter no of students: "))
+                break
+            except ValueError:
+                print("Invalid input, Please enter an integer.")
+
+    for i in range(num_students):
+            print(f"\nStudent {i+1}:")
+            
+            while True:
+                try:
+                    name = input("Enter student name: ").strip()
+                    if not name:
+                        raise ValueError("Name cannot be empty.")
+                    elif not name.replace(" ", "").isalpha():
+                        raise ValueError("Name should contain only letters and spaces.")
+                    break
+                except ValueError as e:
+                    print(f"Error: {e}")
+
+            while True:
+                
+
+                try:
+                    math = int(input("Enter the number of marks in maths: "))
+                    if not 0 <= math <= 100:
+                        raise ValueError
+                    break
+            
+                except:
+                    print("error in entering marks of math")
+
+            while True:
+                
+                    
+                        
+                    try: 
+                            science = int(input("Enter the number of marks in Sci: "))
+                            if not 0 <= science <= 100:
+                                raise ValueError
+                            break
+                    except:
+                            print("error in entering marks of science")
+            while True:
+                try:
+                    english = int(input("Enter the number of marks in Eng: "))
+                    if not 0 <= english <= 100:
+                        raise ValueError
+                    break
+                except:
+                    print("error in entering marks of english")
+            
+            total = math + science+ english
+
+            average = (math + science + english) // 3 
+        
+            grade = calculate_grade(average)
+
+        
+            students_data[name] = {
+                "Math": math,
+                 "Science": science,
+                "English": english,
+                "total": total,
+                "Average": average,
+                "Grade": grade
+                }
+            
+            students.append({
+            "name": name,
+            "Math": math,
+            "Science": science,
+            "English": english,
+            "total": total,
+            "average": average,
+            "grade": grade
+            })
+
+        
+
+
+print("\nStudent Records:")
+for student, data in students_data.items():
+    print(f"\nName: {student}")
+    for key, value in data.items():
+        print(f"{key}: {value}")
+
+while True:
+    print("Select Option from below")
+    print("a. Add new student")
+    print("b. Print all student reports")
+    print("c. save the file in .txt file")
+    print("d. search student by name")
+    print("e. delete student record")
+    print("f. rank students according to their marks")
+    print("g. update student marks")
+    print("h. exit")
+
+    option=input("enter the the option you want to select: ")
+
+
+
+    if option == 'a':
+        add_student()
+
+    elif option == 'b':
+        if not students_data:
+            print("No student records found. ")
+        else:
+            print("\nStudent Records:")
+            for student, data in students_data.items():
+                print(f"\nName: {student}")
+                for key, value in data.items():
+                    print(f"{key}: {value}")
+
+    elif option == 'c':
+         with open("student_report.txt", "w") as file:
+            if not students_data:
+                file.write("No student records found.")
+            else:
+                file.write("Student Records:")
+                for student, data in students_data.items():
+                    file.write(f"\nName: {student}")
+                    for key, value in data.items():
+                        file.write(f"{key}: {value}")
+            print("Student report is saved to 'student_report.txt'")
+
+
+    elif option == 'd':
+        searchName= input("enter the name which is to be searched: ")
+        found= False
+        for student, data in students_data.items():
+            if student.lower() == searchName.lower():
+                print(f"\nRecord Found\nName: {student}")
+                for key, value in data.items():
+                    print(f"{key}: {value}")
+                found = True
+                break
+        if not found:
+            print("Student not found.")
+        
+    elif option== 'e':
+        delete=input("Enter the student name to delete: ").strip()
+        found=False
+        
+
+        for student in list(students_data.keys()):
+            if student.lower() == delete.lower():
+                student_found = True
+                confirm = input(f"Are you sure you want to delete record for {student}? (yes/no): ").strip().lower()
+                if confirm == 'yes':
+                    del students_data[student]
+                    print(f"Record for {student} has been deleted.")
+                else:
+                    print("not deleted.")
+                break
+
+        if not student_found:
+            print("Student not found.")
+    
+    elif option =='f':
+        sorted_students=[]
+        temp= students[:]
+
+        while temp:
+            highest=temp[0]
+            for student in temp:
+                if student['total']>highest ['total']:
+                    highest = student
+            sorted_students.append(highest)
+            temp.remove(highest)
+
+        print("student rankings:")
+        for i,s in enumerate(sorted_students,start=1):
+            print(f"rank {i}: {s['name']}")
+            print(f"marks= maths: {s['Math']},science: {s['Science']},english: {s['English']}")
+            
+            print(f"total: {s['total']},average: {s['average']}, grade: {s['grade']}")
+
+    elif option=='g':
+            update_name = input("Enter the name of the student to update: ").strip()
+            student_found = False
+
+            for student in students_data:
+                if student.lower() == update_name.lower():
+                    student_found = True
+                    print(f"Current marks for {student}:")
+                    print(f"Math: {students_data[student]['Math']}")
+                    print(f"Science: {students_data[student]['Science']}")
+                    print(f"English: {students_data[student]['English']}")
+
+                    # Updating marks with validation
+                    while True:
+                        try:
+                            math = int(input("Enter new Math marks: "))
+                            if not 0 <= math <= 100:
+                                raise ValueError
+                            break
+                        except:
+                            print("Invalid input. Please enter a number between 0 and 100.")
+
+                    while True:
+                        try:
+                            science = int(input("Enter new Science marks: "))
+                            if not 0 <= science <= 100:
+                                raise ValueError
+                            break
+                        except:
+                            print("Invalid input. Please enter a number between 0 and 100.")
+
+                    while True:
+                        try:
+                            english = int(input("Enter new English marks: "))
+                            if not 0 <= english <= 100:
+                                raise ValueError
+                            break
+                        except:
+                            print("Invalid input. Please enter a number between 0 and 100.")
+
+                    total = math + science + english
+                    average = total // 3
+                    grade = calculate_grade(average)
+
+                    students_data[student] = {
+                        "Math": math,
+                        "Science": science,
+                        "English": english,
+                        "total": total,
+                        "average": average,
+                        "grade": grade
+                    }
+
+                    print(f"Marks for {student} updated successfully!")
+                    break
+
+            if not student_found:
+                print("Student not found.")
+
+    
+    elif option == 'h':
+        print("Thankyou...")
+        break
+
+    else:
+        print("Invalid choice, please try again.")

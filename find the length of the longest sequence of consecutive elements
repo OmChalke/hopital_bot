@@ -1,0 +1,17 @@
+arr=[3,8,2,5,4,10]
+new=1
+
+sort=sorted(arr)
+n= len(sort)
+print(sort)
+
+for i in range(n-1):
+    if sort[i+1]-sort[i]==1:
+        new += 1
+
+    else:
+        break
+
+print(new)
+
+

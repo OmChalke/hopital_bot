@@ -1,0 +1,106 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Public+Sans%3Awght%40400%3B500%3B600%3B700%3B800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>HealthHub - Sign Up</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+      :root {
+        --primary-color: #1993e5;
+        --secondary-color: #f0f3f4;
+        --text-primary: #111518;
+        --text-secondary: #637988;
+        --border-color: #dce1e5;
+        --error-color: #ef4444;
+      }
+      .form-input {
+        @apply block w-full rounded-md border-0 py-2.5 px-3.5 text-sm leading-6 text-[var(--text-primary)] shadow-sm ring-1 ring-inset ring-[var(--border-color)] placeholder:text-[var(--text-secondary)] focus:ring-2 focus:ring-inset focus:ring-[var(--primary-color)];
+      }
+      .btn-primary {
+        @apply w-full rounded-md bg-[var(--primary-color)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary-color)];
+      }
+      .btn-secondary {
+         @apply rounded-md bg-[var(--secondary-color)] px-3.5 py-2.5 text-sm font-semibold text-[var(--text-primary)] shadow-sm hover:bg-opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--secondary-color)];
+      }
+    </style>
+</head>
+<body class="bg-slate-50" style='font-family: "Public Sans", "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col bg-white group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-white px-6 sm:px-10 py-4 shadow-sm">
+<div class="flex items-center gap-3">
+<div class="size-6 text-[var(--primary-color)]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-[var(--text-primary)] text-xl font-bold leading-tight tracking-tight">HealthHub</h1>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[var(--text-primary)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors" href="#">Home</a>
+<a class="text-[var(--text-primary)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors" href="#">About</a>
+<a class="text-[var(--text-primary)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors" href="#">Services</a>
+<a class="text-[var(--text-primary)] text-sm font-medium leading-normal hover:text-[var(--primary-color)] transition-colors" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-2">
+<button class="btn-primary px-4 py-2 text-sm">
+              Sign Up
+            </button>
+<button class="btn-secondary px-4 py-2 text-sm">
+              Sign In
+            </button>
+</div>
+</header>
+<main class="flex flex-1 items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+<div class="w-full max-w-md space-y-8">
+<div>
+<h2 class="mt-6 text-center text-3xl font-extrabold text-[var(--text-primary)]">
+                Create your HealthHub account
+              </h2>
+<p class="mt-2 text-center text-sm text-[var(--text-secondary)]">
+                Or <a class="font-medium text-[var(--primary-color)] hover:text-opacity-80" href="#">sign in to your existing account</a>
+</p>
+</div>
+<form action="#" class="mt-8 space-y-6" method="POST">
+<input name="remember" type="hidden" value="true"/>
+<div class="rounded-md shadow-sm -space-y-px">
+<div>
+<label class="sr-only" for="username">Username</label>
+<input class="form-input rounded-t-md" id="username" name="username" placeholder="Username" required="" type="text"/>
+</div>
+<div>
+<label class="sr-only" for="email-address">Email address</label>
+<input autocomplete="email" class="form-input" id="email-address" name="email" placeholder="Email address" required="" type="email"/>
+</div>
+<div>
+<label class="sr-only" for="password">Password</label>
+<input autocomplete="new-password" class="form-input" id="password" name="password" placeholder="Password" required="" type="password"/>
+</div>
+<div>
+<label class="sr-only" for="confirm-password">Confirm Password</label>
+<input autocomplete="new-password" class="form-input rounded-b-md" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required="" type="password"/>
+</div>
+</div>
+<div class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+<strong class="font-bold">Error!</strong>
+<span class="block sm:inline">Passwords do not match.</span>
+</div>
+<div>
+<button class="btn-primary" type="submit">
+                  Sign Up
+                </button>
+</div>
+</form>
+<p class="mt-4 text-center text-sm text-[var(--text-secondary)]">
+              By signing up, you agree to our
+              <a class="font-medium text-[var(--primary-color)] hover:text-opacity-80" href="#">Terms of Service</a>
+              and
+              <a class="font-medium text-[var(--primary-color)] hover:text-opacity-80" href="#">Privacy Policy</a>.
+            </p>
+</div>
+</main>
+</div>
+</div>
+
+</body></html>

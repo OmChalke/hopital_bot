@@ -1,0 +1,19 @@
+array=[1,2,3,4,5,7,8,9,10]
+n=len(array)
+last=array[n-1]
+total=0
+
+
+for i in array:
+    total= total+ i 
+
+print(total)
+
+
+alltotal=(last*(last+1))/2
+print(alltotal)
+
+missing_no=alltotal-total
+
+print("missing number is: ",missing_no)
+      

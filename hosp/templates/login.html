@@ -1,0 +1,71 @@
+<html><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B600%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B600%3B700%3B900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<title>Interactive Login Page</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+      .form-input:focus {
+        border-color: #0c7ff2;
+        box-shadow: 0 0 0 2px rgba(12, 127, 242, 0.2);
+      }
+      .login-button:hover {
+        background-color: #0069d9;
+      }
+      .login-button:active {
+        background-color: #005cb9;
+        transform: translateY(1px);
+      }
+    </style>
+</head>
+<body class="bg-slate-100" style='font-family: Inter, "Noto Sans", sans-serif;'>
+<div class="relative flex size-full min-h-screen flex-col items-center justify-center p-6 group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col items-center justify-center">
+<header class="flex flex-col items-center gap-4 text-slate-900 mb-8 text-center">
+<div class="size-12 text-[#0c7ff2]">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_319)">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+</g>
+<defs>
+<clipPath id="clip0_6_319"><rect fill="white" height="48" width="48"></rect></clipPath>
+</defs>
+</svg>
+</div>
+<h1 class="text-slate-900 text-3xl font-bold tracking-tight">Welcome to Acme Co</h1>
+<p class="text-slate-600 text-lg">Please sign in to continue</p>
+</header>
+<form action="/login_submit" method="POST">
+<div class="bg-white shadow-xl rounded-xl p-8 sm:p-10 w-full max-w-md">
+<div class="space-y-6">
+<div>
+<label class="block text-sm font-medium text-slate-700 pb-1.5" for="username">Username</label>
+<input class="form-input block w-full rounded-lg border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 placeholder-slate-400 transition-shadow duration-150 ease-in-out focus:border-[#0c7ff2] focus:ring-[#0c7ff2] focus:ring-opacity-50 text-base" id="username" name="username" placeholder="Enter your username" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-medium text-slate-700 pb-1.5" for="password">Password</label>
+<input class="form-input block w-full rounded-lg border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 placeholder-slate-400 transition-shadow duration-150 ease-in-out focus:border-[#0c7ff2] focus:ring-[#0c7ff2] focus:ring-opacity-50 text-base" id="password" name="password" placeholder="Enter your password" type="password"/>
+</div>
+<div class="flex items-center justify-between pt-2">
+<a class="text-sm font-medium text-[#0c7ff2] hover:text-[#0069d9] hover:underline" href="#">Forgot password?</a>
+</div>
+<button class="login-button flex w-full items-center justify-center rounded-lg bg-[#0c7ff2] px-4 py-3 text-base font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-[#0069d9] focus:outline-none focus:ring-2 focus:ring-[#0c7ff2] focus:ring-offset-2" type="submit">
+              Login
+            <span class="truncate"></span>
+            </button>
+</div>
+</form>
+<p class="mt-8 text-center text-sm text-slate-600">
+            Don't have an account?
+            <a class="font-medium text-[#0c7ff2] hover:text-[#0069d9] hover:underline" href="/signup">Sign up</a>
+</p>
+</div>
+</form>
+<footer class="mt-10 text-center text-sm text-slate-500">
+<p>© 2024 Acme Co. All rights reserved.</p>
+</footer>
+</div>
+</div>
+
+</body></html>
