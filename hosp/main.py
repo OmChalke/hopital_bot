@@ -246,7 +246,7 @@ def check_notification():
 def logout():
     if 'user' in session:
         session.pop('user')
-        return jsonify({'message': 'Logout successful'})
+        return jsonify({'message': 'Logout successful.'})
     else:
         return jsonify({'message': 'No user is currently logged in'}), 400 
     
