@@ -34,19 +34,15 @@
 <h1 class="text-[var(--text-primary)] text-xl font-bold tracking-tight">AIxploria</h1>
 </div>
 <div class="hidden sm:flex flex-1 justify-end items-center gap-4">
-<div class="relative max-w-xs w-full">
-<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[var(--text-secondary)]">
-<svg class="w-5 h-5" fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+<div class="flex items-center gap-2 text-[var(--primary-color)] font-bold">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+<path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H216v32H40ZM216,200H40V104H216Z"></path>
+<circle cx="60" cy="72" r="8"></circle>
+<circle cx="84" cy="72" r="8"></circle>
 </svg>
+<span>Appointments: <span id="total-appointments">0</span></span>
+<span id="date-filter-indicator" class="ml-2 text-sm hidden px-2 py-1 bg-[var(--secondary-color)] rounded-full"></span>
 </div>
-<input class="form-input w-full pl-10 pr-4 py-2 rounded-lg border-transparent bg-[var(--secondary-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition-all" placeholder="Search" type="search"/>
-</div>
-<button class="p-2 rounded-full text-[var(--text-secondary)] hover:bg-[var(--secondary-color)] hover:text-[var(--primary-color)] transition-colors">
-<svg fill="currentColor" height="24px" viewBox="0 0 256 256" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216ZM48,184c7.7-13.24,16-43.92,16-80a64,64,0,1,1,128,0c0,36.05,8.28,66.73,16,80Z"></path>
-</svg>
-</button>
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdsxh6GZJVDCehC8zTtoVl8TCS3nZcvtJ6VzNpoX3a433bbtTGqIWBZa9QJttWeSKTRC0XlTyjvijCxKoMZYe0wmJXLaH0Xi-4PvX8O2c4JJPlapqUuMfYu22MoZwhc9LhOjLuMBLiWoocgqSEXgf6Fker6woXLTORhHAL_wMZTxUs_Fr3NWarn_rDda_Zdyj3m2eRa93Nr7MnjjdxyJlwiAdDSNpEwzCiF2poDXwY5jamDu6sv22NTBpb6WoMZ2wBVjZRmaR3trQ");'></div>
 </div>
 </header>
@@ -59,27 +55,24 @@
 <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
 </svg>
 </div>
-<input class="form-input w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[var(--accent-color)] bg-[var(--background-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition-all" placeholder="Search for a user..." type="search"/>
+<input id="date-search" class="form-input w-full pl-10 pr-4 py-3 rounded-lg border-2 border-[var(--accent-color)] bg-[var(--background-color)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent transition-all" placeholder="Enter date (DD-MM-YYYY)" type="search"/>
+<div id="search-instructions" class="absolute -bottom-6 left-0 text-xs text-[var(--text-secondary)]">Format: DD-MM-YYYY (e.g., 02-08-2025)</div>
 </div>
 <div class="flex items-center gap-3">
-<button class="flex items-center justify-center gap-x-2 rounded-lg bg-[var(--secondary-color)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--accent-color)] transition-colors">
-<span>Age</span>
+<div class="flex gap-2">
+<button id="search-by-date" class="flex items-center justify-center gap-x-2 rounded-lg bg-[var(--primary-color)] px-4 py-3 text-sm font-medium text-white hover:bg-opacity-90 transition-colors">
+<span>Search</span>
 <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+<path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
 </svg>
 </button>
-<button class="flex items-center justify-center gap-x-2 rounded-lg bg-[var(--secondary-color)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--accent-color)] transition-colors">
-<span>Gender</span>
+<button id="clear-search" class="flex items-center justify-center gap-x-2 rounded-lg bg-[var(--secondary-color)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--accent-color)] transition-colors">
+<span>Clear</span>
 <svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+<path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
 </svg>
 </button>
-<button class="flex items-center justify-center gap-x-2 rounded-lg bg-[var(--secondary-color)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--accent-color)] transition-colors">
-<span>Weight</span>
-<svg fill="currentColor" height="20px" viewBox="0 0 256 256" width="20px" xmlns="http://www.w3.org/2000/svg">
-<path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
-</svg>
-</button>
+</div>
 </div>
 </div>
 <div id="data-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -87,49 +80,122 @@
 <div class="bg-[var(--background-color)] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
 <div class="p-5 flex-grow">
 <script>
-  fetch('data.json')
+  fetch('../data.json')
   .then(response => response.json())
   .then(data => {
     const container = document.getElementById('data-container');
-
-    data.forEach(person => {
-      const riskLevel = person.risk_level?.toLowerCase().trim();
-      let riskColorClass = '';
-      if (riskLevel === 'emergency') {
-        riskColorClass = 'text-red-600'; 
-      } else if (riskLevel === 'urgent') {
-        riskColorClass = 'text-yellow-500'; 
-      } else {
-        riskColorClass = 'text-green-600';
-      }
-
-
-      const card = `
-      <div class="bg-[var(--background-color)] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
-        <div class="p-5 flex-grow">
-          <h3 class="text-lg font-bold text-[var(--text-primary)] mb-2">${person.name}</h3>
-          <div class="space-y-2 text-sm text-[var(--text-secondary)]">
-            <p class="flex items-center ${riskColorClass}">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-              </svg>
-              ${person.risk_level}
-            </p>
-            <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>Age: ${person.age}</p>
-            <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>${person.address}</p>
-            <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v4m0 0h-4m4 0l-5-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>Weight: ${person.weight}</p>
-            <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 016-6h6v6z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>Gender: ${person.gender}</p>
-          </div>
-        </div>
-        <div class="px-5 pb-5 mt-auto">
-          <!-- Replace the existing View button code with this: -->
-<button onclick="window.location.href='/details?id=${person.id}'" class="w-full bg-[var(--primary-color)] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">View</button>       </div>
-      </div>`;
+    document.getElementById('total-appointments').textContent = data.length;
+    
+    // Function to display all appointments
+    function displayAppointments(filteredData) {
+      container.innerHTML = '';
       
-      container.insertAdjacentHTML('beforeend', card);
+      filteredData.forEach(person => {
+        const riskLevel = person.risk_level?.toLowerCase().trim();
+        let riskColorClass = '';
+        if (riskLevel === 'emergency') {
+          riskColorClass = 'text-red-600'; 
+        } else if (riskLevel === 'urgent') {
+          riskColorClass = 'text-yellow-500'; 
+        } else {
+          riskColorClass = 'text-green-600';
+        }
+
+        const card = `
+        <div class="bg-[var(--background-color)] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
+          <div class="p-5 flex-grow">
+            <h3 class="text-lg font-bold text-[var(--text-primary)] mb-2">${person.name}</h3>
+            <div class="space-y-2 text-sm text-[var(--text-secondary)]">
+              <p class="flex items-center ${riskColorClass}">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                </svg>
+                ${person.risk_level}
+              </p>
+              <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>Appointment: ${person.appointment_date}</p>
+              <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>${person.address}</p>
+              <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>${person.contact}</p>
+              <p class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></svg>${person.problem}</p>
+            </div>
+          </div>
+          <div class="px-5 pb-5 mt-auto">
+            <button onclick="window.location.href='/details?id=${person.id}'" class="w-full bg-[var(--primary-color)] text-white font-bold py-2 px-4 rounded-lg hover:bg-opacity-90 transition-colors">View</button>
+          </div>
+        </div>`;
+        
+        container.insertAdjacentHTML('beforeend', card);
+      });
+    }
+    
+    // Initial display of all appointments
+    displayAppointments(data);
+    
+    // Date search functionality
+    document.getElementById('search-by-date').addEventListener('click', function() {
+      const searchDate = document.getElementById('date-search').value.trim();
+      
+      if (searchDate) {
+        // Filter appointments by date
+        const filteredData = data.filter(person => {
+          return person.appointment_date.includes(searchDate);
+        });
+        
+        // Update total appointments counter to show filtered count
+        document.getElementById('total-appointments').textContent = filteredData.length;
+        
+        // Display a message if no appointments found for the date
+        if (filteredData.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full text-center py-10">
+              <svg class="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              </svg>
+              <h3 class="mt-4 text-lg font-medium text-[var(--text-primary)]">No appointments found for ${searchDate}</h3>
+              <p class="mt-2 text-sm text-[var(--text-secondary)]">Try another date or clear the search to see all appointments.</p>
+            </div>
+          `;
+        } else {
+          displayAppointments(filteredData);
+        }
+      } else {
+        // If search is empty, show all appointments
+        document.getElementById('total-appointments').textContent = data.length;
+        displayAppointments(data);
+      }
+    });
+    
+    // Also enable search when pressing Enter in the search field
+    document.getElementById('date-search').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('search-by-date').click();
+      }
+    });
+    
+    // Clear search functionality
+    document.getElementById('clear-search').addEventListener('click', function() {
+      document.getElementById('date-search').value = '';
+      document.getElementById('date-filter-indicator').classList.add('hidden');
+      document.getElementById('date-filter-indicator').textContent = '';
+      document.getElementById('total-appointments').textContent = data.length;
+      displayAppointments(data);
+    });
+    
+    // Update filter indicator when searching
+    document.getElementById('search-by-date').addEventListener('click', function() {
+      const searchDate = document.getElementById('date-search').value.trim();
+      const dateIndicator = document.getElementById('date-filter-indicator');
+      
+      if (searchDate) {
+        dateIndicator.textContent = `Date: ${searchDate}`;
+        dateIndicator.classList.remove('hidden');
+      } else {
+        dateIndicator.classList.add('hidden');
+        dateIndicator.textContent = '';
+      }
     });
   })
   .catch(error => console.error('Error loading JSON:', error));
+</script>
 </script>
 
 </body></html>

@@ -308,4 +308,27 @@ def process_date(message):
     #if response.status_code == 200:
        # bot.send_message(chat_id, "Your data was also sent to the hospital system.")
 
-bot.infinity_polling()
+if __name__ == "__main__":
+    import os
+    import sys
+    import socket
+    
+    # Create sockets to check if another instance is already running
+    sock1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        # Try to bind to ports that would be used by this application and bot.py
+        # If either fails, another instance is already running
+        sock1.bind(('localhost', 12345))  # Port for bot.py
+        sock2.bind(('localhost', 12346))  # Port for s.py
+        
+        # If we get here, no other instance is running
+        print("Starting Telegram bot polling...")
+        bot.infinity_polling()
+    except socket.error:
+        print("ERROR: Another instance of this bot is already running!")
+        print("Please stop the other instance before starting a new one.")
+        sys.exit(1)
+    finally:
+        sock1.close()
+        sock2.close()
