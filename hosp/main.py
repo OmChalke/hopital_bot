@@ -226,11 +226,8 @@ def popup():
 @app.route('/notify', methods=['POST'])
 def notify():
     data = request.get_json()
-    # Create a more detailed notification message
     risk_level = data.get('risk_level', 'Unknown')
     problem = data.get('problem', 'Not specified')
-    
-    # Format the notification message with more details
     latest_notification['message'] = f"New {risk_level.lower()} appointment from {data['name']} for {problem}"
     latest_notification['status'] = True
     return jsonify({'success': True})
