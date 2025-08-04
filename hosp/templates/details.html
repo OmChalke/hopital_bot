@@ -61,6 +61,10 @@
 <h1 class="text-xl font-bold text-neutral-900">HealthFirst</h1>
 </div>
 <div class="flex items-center gap-4">
+<button id="send-reminder-btn" class="flex items-center gap-2 rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-700 transition-colors">
+<span class="material-icons-outlined">notifications_active</span>
+<span>Send Reminder</span>
+</button>
 <button class="rounded-full p-2 text-neutral-600 transition-colors hover:bg-secondary-100 hover:text-neutral-800">
 <span class="material-icons-outlined">notifications</span>
 </button>
@@ -150,5 +154,88 @@
 </div>
 </main>
 </div>
+
+<div id="notification" class="fixed bottom-4 right-4 hidden">
+  <div class="flex items-center gap-3 rounded-lg bg-white p-4 shadow-lg border-l-4 border-primary-600">
+    <span class="material-icons-outlined text-primary-600">notifications</span>
+    <div>
+      <p id="notification-title" class="font-medium text-neutral-900">Notification</p>
+      <p id="notification-message" class="text-sm text-secondary-600">Notification message</p>
+    </div>
+    <button onclick="closeNotification()" class="ml-4 text-secondary-600 hover:text-primary-600">
+      <span class="material-icons-outlined">close</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  // Function to close notification
+  function closeNotification() {
+    document.getElementById('notification').classList.add('hidden');
+  }
+  
+  // Function to show notification
+  function showNotification(title, message) {
+    document.getElementById('notification-title').textContent = title;
+    document.getElementById('notification-message').textContent = message;
+    document.getElementById('notification').classList.remove('hidden');
+    
+    // Auto-hide notification after 10 seconds
+    setTimeout(() => {
+      closeNotification();
+    }, 10000);
+  }
+  
+  // Function to send appointment reminder
+  function sendAppointmentReminder() {
+    // Disable the button and show loading state
+    const button = document.getElementById('send-reminder-btn');
+    const originalText = button.innerHTML;
+    button.disabled = true;
+    button.innerHTML = '<span class="material-icons-outlined animate-spin">refresh</span><span>Processing...</span>';
+    
+    // Get patient ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const patientId = urlParams.get('id');
+    
+    if (!patientId) {
+      showNotification('Error', 'Patient ID not found');
+      button.disabled = false;
+      button.innerHTML = originalText;
+      return;
+    }
+    
+    // Make API call to send reminder
+    fetch('/send_appointment_reminders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ patient_id: patientId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Show notification with result
+      showNotification(data.success ? 'Success' : 'Error', data.message);
+      
+      // Reset button state
+      button.disabled = false;
+      button.innerHTML = originalText;
+    })
+    .catch(error => {
+      console.error('Error sending reminder:', error);
+      showNotification('Error', 'Failed to send reminder. Please try again.');
+      
+      // Reset button state
+      button.disabled = false;
+      button.innerHTML = originalText;
+    });
+  }
+  
+  // Add event listener to the send reminder button
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('send-reminder-btn').addEventListener('click', sendAppointmentReminder);
+  });
+</script>
 
 </body></html>

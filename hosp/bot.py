@@ -5,6 +5,13 @@ import mysql.connector
 import requests
 from nltk.chat.util import Chat, reflections
 import datetime
+import time
+
+# Helper function to register next step handler with delay
+def register_next_step_with_delay(message, callback, delay=1):
+    """Register next step handler with a delay to prevent rapid successive questions"""
+    time.sleep(delay)  # Add delay before registering next handler
+    bot.register_next_step_handler(message, callback)
 
 x = datetime.datetime.now()
 
@@ -134,7 +141,7 @@ def handle_text(message):
         elif "book" in text or "appointment" in text:
             bot.send_message(chat_id, "Alright, let's get started. What's your name?")
             user_data[chat_id] = {}
-            bot.register_next_step_handler(message, process_name)
+            register_next_step_with_delay(message, process_name)
         else:
             bot.send_message(chat_id, "I'm not sure about that. You can ask about our address, timing, fees, or website.")
         user_data[chat_id]['asked_help'] = False
@@ -145,7 +152,7 @@ def handle_text(message):
     if any(word in text for word in appointment_keywords):
         msg = bot.send_message(message.chat.id, "Great! Let's get started. What's your name?")
         user_data[message.chat.id] = {}
-        bot.register_next_step_handler(msg, process_name)
+        register_next_step_with_delay(msg, process_name)
         return
     
     if text in ['no', 'nope', 'not now', 'nah']:
@@ -178,23 +185,23 @@ def process_name(message):
         chat_id = message.chat.id
         if not message.text:
             msg = bot.send_message(chat_id, "I didn't receive your name. Please enter your name.")
-            bot.register_next_step_handler(msg, process_name)
+            register_next_step_with_delay(msg, process_name)
             return
             
         name = message.text.strip()
         if not name.replace(" ", "").isalpha():
             msg = bot.send_message(chat_id, "That doesn't seem like a valid name. Please enter your full name (letters only).")
-            bot.register_next_step_handler(msg, process_name)
+            register_next_step_with_delay(msg, process_name)
             return
         
         user_data[chat_id] = {'name': name}
         msg = bot.send_message(chat_id, f"OK {name}, now please enter your contact number.")
-        bot.register_next_step_handler(msg, process_contact)
+        register_next_step_with_delay(msg, process_contact)
     except Exception as e:
         print(f"Error in process_name: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please enter your name again.")
-            bot.register_next_step_handler(msg, process_name)
+            register_next_step_with_delay(msg, process_name)
         return
 
 def process_contact(message):
@@ -207,24 +214,24 @@ def process_contact(message):
         chat_id = message.chat.id
         if not message.text:
             msg = bot.send_message(chat_id, "I didn't receive your contact number. Please enter your contact number.")
-            bot.register_next_step_handler(msg, process_contact)
+            register_next_step_with_delay(msg, process_contact)
             return
             
         contact = message.text.strip()
         # Validate contact number - should be 10 digits
         if not contact.isdigit() or len(contact) != 10:
             msg = bot.send_message(chat_id, "Invalid contact number. Please enter a 10-digit mobile number")
-            bot.register_next_step_handler(msg, process_contact)
+            register_next_step_with_delay(msg, process_contact)
             return
         
         user_data[chat_id]['contact'] = contact
         msg = bot.send_message(chat_id, "Enter your address.")
-        bot.register_next_step_handler(msg, process_address)
+        register_next_step_with_delay(msg, process_address)
     except Exception as e:
         print(f"Error in process_contact: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please enter your contact number again.")
-            bot.register_next_step_handler(msg, process_contact)
+            register_next_step_with_delay(msg, process_contact)
         return
 
 def process_address(message):
@@ -337,7 +344,7 @@ def process_age(message):
                 bot.register_next_step_handler(msg, process_age)
                 return
         except ValueError:
-            msg = bot.send_message(chat_id, "Please enter your age as a number.")
+            msg = bot.send_message(chat_id, "Please enter your age as a numeric value (e.g., 25).")
             bot.register_next_step_handler(msg, process_age)
             return
         
@@ -350,22 +357,6 @@ def process_age(message):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please enter your age again.")
             bot.register_next_step_handler(msg, process_age)
         return
-    
-    age_text = message.text.strip()
-    try:
-        age = int(age_text)
-        if age < 0 or age > 120:
-            msg = bot.send_message(chat_id, "Please enter a valid age between 0 and 120.")
-            bot.register_next_step_handler(msg, process_age)
-            return
-    except ValueError:
-        msg = bot.send_message(chat_id, "Please enter your age as a numeric value (e.g., 25).")
-        bot.register_next_step_handler(msg, process_age)
-        return
-    
-    user_data[chat_id]['age'] = age
-    msg = bot.send_message(chat_id, "Please enter your weight in kg.")
-    bot.register_next_step_handler(msg, process_weight)
 
 def process_weight(message):
     try:
@@ -450,7 +441,7 @@ def ask_additional_info(message):
                 msg = bot.send_message(chat_id, "Are you currently pregnant?")
                 bot.register_next_step_handler(msg, process_pregnancy_status)
             else:
-                msg = bot.send_message(chat_id, "Do you have any other symptoms?")
+                msg = bot.send_message(chat_id, "Do you have any other symptoms like fever, Fatigue, weakness,Dizziness, light-headedness, Nausea or vomiting?")
                 bot.register_next_step_handler(msg, process_other_symptoms)
         else:
             msg = bot.send_message(chat_id, "On which date would you like to schedule your appointment? Please enter in DD-MM-YYYY format (e.g., 02-07-2025).")
@@ -595,12 +586,7 @@ def process_menopause_status(message):
         return
 
 def process_other_symptoms(message):
-    try:
-        # Check if message is valid
-        if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
-            print("Error: Invalid message object in process_other_symptoms")
-            return
-            
+    try:    
         chat_id = message.chat.id
         if not message.text:
             msg = bot.send_message(chat_id, "I didn't receive your symptoms. Please describe any symptoms you're experiencing.")
@@ -611,10 +597,14 @@ def process_other_symptoms(message):
         score = 0
         
         if 'yes' in response or 'yess' in response or 'fever' in response or 'Dizziness' in response or 'Fatigue' in response or 'Nausea' in response or 'vomiting' in response:
-            score = 40  # Higher score for pregnancy
+            score = 40  # Higher score for symptoms
         elif 'no' in response or 'nope' in response:
             score = 0
         
+        # Initialize score if it doesn't exist
+        if 'score' not in user_data[chat_id]:
+            user_data[chat_id]['score'] = 0
+            
         user_data[chat_id]['score'] += score
         user_data[chat_id]['other_symptoms'] = response
         msg = bot.send_message(chat_id, "Do you have any known allergies?")
@@ -622,13 +612,12 @@ def process_other_symptoms(message):
     except Exception as e:
         print(f"Error in process_other_symptoms: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
-            msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please describe any symptoms you're experiencing again.")
+            msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please describe your symptoms again.")
             bot.register_next_step_handler(msg, process_other_symptoms)
         return
 
 def process_allergies(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_allergies")
             return
@@ -638,28 +627,31 @@ def process_allergies(message):
             msg = bot.send_message(chat_id, "I didn't receive your response about allergies. Please let me know if you have any allergies.")
             bot.register_next_step_handler(msg, process_allergies)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
         if 'yes' in response or 'yess' in response:
-            score = 25  # Higher score for pregnancy
+            score = 25  # Points for having allergies
         elif 'no' in response or 'nope' in response:
             score = 0
         
+        if 'score' not in user_data[chat_id]:
+            user_data[chat_id]['score'] = 0
         user_data[chat_id]['score'] += score
         user_data[chat_id]['allergies'] = response
+        
         msg = bot.send_message(chat_id, "Is the pain mild, moderate, or severe?")
         bot.register_next_step_handler(msg, process_pain_level)
+        
     except Exception as e:
         print(f"Error in process_allergies: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you have any known allergies.")
             bot.register_next_step_handler(msg, process_allergies)
-        return
 
 def process_pain_level(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_pain_level")
             return
@@ -669,29 +661,31 @@ def process_pain_level(message):
             msg = bot.send_message(chat_id, "I didn't receive your pain level. Please indicate if your pain is mild, moderate, or severe.")
             bot.register_next_step_handler(msg, process_pain_level)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
-        if 'sever' in response:
-            score = 50  # Higher score for pregnancy
+        if 'severe' in response:
+            score = 50  # Highest points for severe pain
         elif 'moderate' in response:
             score = 30
-        else:
-            score= 0
+        elif 'mild' in response:
+            score = 10
+        
         user_data[chat_id]['score'] += score
         user_data[chat_id]['pain_level'] = response
+        
         msg = bot.send_message(chat_id, "How did the symptoms start—suddenly or gradually?")
         bot.register_next_step_handler(msg, process_symptom_onset)
+        
     except Exception as e:
         print(f"Error in process_pain_level: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if your pain is mild, moderate, or severe.")
             bot.register_next_step_handler(msg, process_pain_level)
-        return
 
 def process_symptom_onset(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_symptom_onset")
             return
@@ -701,28 +695,29 @@ def process_symptom_onset(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if your symptoms started suddenly or gradually.")
             bot.register_next_step_handler(msg, process_symptom_onset)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
-        if 'yes' in response or 'yess' in response or 'suddenly' in response:
-            score = 40  # Higher score for pregnancy
-        elif 'no' in response or 'nope' in response:
+        if 'sudden' in response or 'suddenly' in response:
+            score = 40  # Points for sudden onset
+        elif 'gradual' in response or 'gradually' in response:
             score = 10
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['symptom_onset'] = response
+        
         msg = bot.send_message(chat_id, "Have you tried any treatments before coming here?")
         bot.register_next_step_handler(msg, process_previous_treatments)
+        
     except Exception as e:
         print(f"Error in process_symptom_onset: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if your symptoms started suddenly or gradually.")
             bot.register_next_step_handler(msg, process_symptom_onset)
-        return
 
 def process_previous_treatments(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_previous_treatments")
             return
@@ -732,28 +727,29 @@ def process_previous_treatments(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you've tried any treatments before coming here.")
             bot.register_next_step_handler(msg, process_previous_treatments)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
-        if 'yes' in response or 'yess' in response:
-            score = 0  # Higher score for pregnancy
-        elif 'no' in response or 'nope' in response:
-            score = 20
+        if 'no' in response or 'nope' in response:
+            score = 20  # Points for not trying any treatments
+        elif 'yes' in response or 'yess' in response:
+            score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['previous_treatments'] = response
+        
         msg = bot.send_message(chat_id, "Have you noticed weight loss or gain?")
         bot.register_next_step_handler(msg, process_weight_changes)
+        
     except Exception as e:
         print(f"Error in process_previous_treatments: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you've tried any treatments before coming here.")
             bot.register_next_step_handler(msg, process_previous_treatments)
-        return
 
 def process_weight_changes(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_weight_changes")
             return
@@ -763,28 +759,29 @@ def process_weight_changes(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you've noticed any weight loss or gain.")
             bot.register_next_step_handler(msg, process_weight_changes)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
-        if 'yes' in response or 'yess' in response or 'loss' in response:
-            score = 25  # Higher score for pregnancy
+        if 'yes' in response or 'yess' in response or 'loss' in response or 'gain' in response:
+            score = 25  # Points for weight changes
         elif 'no' in response or 'nope' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['weight_changes'] = response
+        
         msg = bot.send_message(chat_id, "Have you had similar problems in the past?")
         bot.register_next_step_handler(msg, process_past_problems)
+        
     except Exception as e:
         print(f"Error in process_weight_changes: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you've noticed any weight loss or gain.")
             bot.register_next_step_handler(msg, process_weight_changes)
-        return
 
 def process_past_problems(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_past_problems")
             return
@@ -794,28 +791,29 @@ def process_past_problems(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you've had similar problems in the past.")
             bot.register_next_step_handler(msg, process_past_problems)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
         if 'yes' in response or 'yess' in response:
-            score = 25  # Higher score for pregnancy
+            score = 25  # Points for past problems
         elif 'no' in response or 'nope' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['past_problems'] = response
+        
         msg = bot.send_message(chat_id, "Do you have any chronic conditions like diabetes, high BP, asthma, etc.?")
         bot.register_next_step_handler(msg, process_chronic_conditions)
+        
     except Exception as e:
         print(f"Error in process_past_problems: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you've had similar problems in the past.")
             bot.register_next_step_handler(msg, process_past_problems)
-        return
 
 def process_chronic_conditions(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_chronic_conditions")
             return
@@ -825,28 +823,29 @@ def process_chronic_conditions(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you have any chronic conditions like diabetes, high BP, asthma, etc.")
             bot.register_next_step_handler(msg, process_chronic_conditions)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
         if 'yes' in response or 'yess' in response or 'diabetes' in response or 'high bp' in response or 'asthma' in response:
-            score = 35  # Higher score for chronic conditions
+            score = 35  # Points for chronic conditions
         elif 'no' in response or 'nope' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['chronic_conditions'] = response
-        msg = bot.send_message(chat_id, "Are you currently taking any medications?")
-        bot.register_next_step_handler(msg, process_medications)
+        
+        msg = bot.send_message(chat_id, "Have you undergone any surgeries?")
+        bot.register_next_step_handler(msg, process_surgeries)
+        
     except Exception as e:
         print(f"Error in process_chronic_conditions: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you have any chronic conditions.")
             bot.register_next_step_handler(msg, process_chronic_conditions)
-        return
 
 def process_surgeries(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_surgeries")
             return
@@ -856,28 +855,29 @@ def process_surgeries(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you have undergone any surgeries.")
             bot.register_next_step_handler(msg, process_surgeries)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
         if 'yes' in response or 'yess' in response:
-            score = 20  # Higher score for previous surgeries
+            score = 20  # Points for previous surgeries
         elif 'no' in response or 'nope' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['surgeries'] = response
-        msg = bot.send_message(chat_id, "Are you currently taking any medications?")
-        bot.register_next_step_handler(msg, process_medications)
+        
+        msg = bot.send_message(chat_id, "Do you smoke or drink alcohol?")
+        bot.register_next_step_handler(msg, process_smoking_drinking)
+        
     except Exception as e:
         print(f"Error in process_surgeries: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you have undergone any surgeries.")
             bot.register_next_step_handler(msg, process_surgeries)
-        return
 
 def process_smoking_drinking(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_smoking_drinking")
             return
@@ -887,28 +887,61 @@ def process_smoking_drinking(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you smoke or drink alcohol.")
             bot.register_next_step_handler(msg, process_smoking_drinking)
             return
+            
         response = message.text.lower().strip()
         score = 0
         
-        if 'yes' in response or 'yess' in response or 'smoke' in response or 'drinking' in response or 'alcohol' in response:
-            score = 25  # Higher score for smoking/drinking
+        if 'yes' in response or 'yess' in response or 'smoke' in response or 'drink' in response or 'alcohol' in response:
+            score = 25  # Points for smoking/drinking
         elif 'no' in response or 'nope' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['smoking_drinking'] = response
+        
         msg = bot.send_message(chat_id, "Are you currently taking any medications?")
         bot.register_next_step_handler(msg, process_medications)
+        
     except Exception as e:
         print(f"Error in process_smoking_drinking: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you smoke or drink alcohol.")
             bot.register_next_step_handler(msg, process_smoking_drinking)
-        return
+
+def process_medications(message):
+    try:
+        if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
+            print("Error: Invalid message object in process_medications")
+            return
+            
+        chat_id = message.chat.id
+        if not message.text:
+            msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you are currently taking any medications.")
+            bot.register_next_step_handler(msg, process_medications)
+            return
+            
+        response = message.text.lower().strip()
+        score = 0
+        
+        if 'yes' in response or 'yess' in response:
+            score = 15  # Points for medication use
+        elif 'no' in response or 'nope' in response:
+            score = 0
+        
+        user_data[chat_id]['score'] += score
+        user_data[chat_id]['medications'] = response
+        
+        msg = bot.send_message(chat_id, "Do you exercise regularly?")
+        bot.register_next_step_handler(msg, process_exercise)
+        
+    except Exception as e:
+        print(f"Error in process_medications: {e}")
+        if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
+            msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you are currently taking any medications.")
+            bot.register_next_step_handler(msg, process_medications)
 
 def process_exercise(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_exercise")
             return
@@ -918,30 +951,29 @@ def process_exercise(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you exercise regularly.")
             bot.register_next_step_handler(msg, process_exercise)
             return
+            
         response = message.text.lower().strip()
-        
-        # Process the response
         score = 0
-        if 'yes' in response or 'regularly' in response:
-            score = -10  # Lower score for regular exercise (good for health)
-        elif 'no' in response or 'nope' in response or 'rarely' in response or 'never' in response:
-            score = 10  # Higher score for lack of exercise
+        
+        if 'no' in response or 'nope' in response or 'rarely' in response or 'never' in response:
+            score = 10  # Points for lack of exercise
+        elif 'yes' in response or 'regularly' in response:
+            score = -10  # Negative points for regular exercise (good for health)
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['exercise'] = response
+        
         msg = bot.send_message(chat_id, "Do you have a family history of any medical conditions?")
         bot.register_next_step_handler(msg, process_family_history)
+        
     except Exception as e:
         print(f"Error in process_exercise: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you exercise regularly.")
             bot.register_next_step_handler(msg, process_exercise)
-        return
-
 
 def process_family_history(message):
     try:
-        # Check if message is valid
         if message is None or not hasattr(message, 'chat') or not hasattr(message, 'text'):
             print("Error: Invalid message object in process_family_history")
             return
@@ -951,26 +983,26 @@ def process_family_history(message):
             msg = bot.send_message(chat_id, "I didn't receive your response. Please indicate if you have a family history of any medical conditions.")
             bot.register_next_step_handler(msg, process_family_history)
             return
+            
         response = message.text.lower().strip()
-        
-        # Process the response
         score = 0
+        
         if 'yes' in response or 'history' in response:
-            score = 15  # Higher score for family history of medical conditions
+            score = 15  # Points for family history
         elif 'no' in response or 'nope' in response or 'none' in response:
             score = 0
         
         user_data[chat_id]['score'] += score
         user_data[chat_id]['family_history'] = response
+        
         msg = bot.send_message(chat_id, "On which date would you like to schedule your appointment? Please enter in DD-MM-YYYY format (e.g., 02-07-2025).")
         bot.register_next_step_handler(msg, process_date)
+        
     except Exception as e:
         print(f"Error in process_family_history: {e}")
         if hasattr(message, 'chat') and hasattr(message.chat, 'id'):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error. Please indicate if you have a family history of any medical conditions.")
             bot.register_next_step_handler(msg, process_family_history)
-        return
-
 def process_date(message):
     try:
         # Check if message is valid
@@ -1137,7 +1169,148 @@ def process_date(message):
             msg = bot.send_message(message.chat.id, "Sorry, I encountered an error processing your appointment date. Please try again.")
             bot.register_next_step_handler(msg, process_date)
 
-if __name__ == "__main__":
+def send_appointment_reminders():
+    """
+    Function to send appointment reminders to patients who have appointments the next day.
+    This assigns specific time slots to patients based on a 10-minute per patient schedule starting at 10 AM.
+    """
+    try:
+        # Connect to the database
+        if db is None or cursor is None:
+            print("Database connection not available for sending reminders")
+            return
+            
+        # Get tomorrow's date
+        tomorrow = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime('%d-%m-%Y')
+        
+        # Query to get all appointments for tomorrow
+        query = "SELECT id, name, contact, appointment_date, risk_level FROM appointments WHERE appointment_date = %s ORDER BY points DESC"
+        cursor.execute(query, (tomorrow,))
+        appointments = cursor.fetchall()
+        
+        if not appointments:
+            print(f"No appointments found for tomorrow ({tomorrow})")
+            return
+            
+        # Start time at 10:00 AM
+        start_time = datetime.datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        
+        # Send reminders to each patient with their specific time slot
+        for i, appointment in enumerate(appointments):
+            # Calculate appointment time (10 minutes per patient)
+            appointment_time = start_time + datetime.timedelta(minutes=i*10)
+            time_str = appointment_time.strftime('%I:%M %p')  # Format: 10:00 AM
+            
+            # Get patient details
+            patient_id = appointment[0]
+            patient_name = appointment[1]
+            patient_contact = appointment[2]
+            risk_level = appointment[4]
+            
+            # Prepare reminder message
+            reminder_message = f"Hello {patient_name}, this is a reminder that your appointment is scheduled for tomorrow at {time_str}. Please arrive 10 minutes early. Your priority level is {risk_level}."
+            
+            # Send message via Telegram if we have the chat_id
+            # We need to find the chat_id associated with this patient's contact number
+            for chat_id, data in user_data.items():
+                if data.get('contact') == patient_contact:
+                    try:
+                        bot.send_message(chat_id, reminder_message)
+                        print(f"Reminder sent to {patient_name} via Telegram")
+                    except Exception as e:
+                        print(f"Failed to send Telegram reminder to {patient_name}: {e}")
+                    break
+            
+            # Update the database with the assigned time
+            try:
+                update_query = "UPDATE appointments SET appointment_time = %s WHERE id = %s"
+                cursor.execute(update_query, (time_str, patient_id))
+                db.commit()
+                print(f"Updated appointment time for {patient_name} to {time_str}")
+            except Exception as e:
+                print(f"Failed to update appointment time in database: {e}")
+                
+        print(f"Sent {len(appointments)} appointment reminders for tomorrow")
+    except Exception as e:
+        print(f"Error in send_appointment_reminders: {e}")
+
+# Function to handle the notify button press from the hospital website
+def send_all_notifications():
+    """
+    Function to send notifications to all patients with appointments for the next day
+    when triggered by the hospital website.
+    """
+    send_appointment_reminders()
+    return {"success": True, "message": "All appointment notifications sent successfully"}
+
+# Create a Flask app for the notification endpoint
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/send_notifications', methods=['POST'])
+def receive_notifications():
+    """
+    Endpoint to receive notification requests from the main application.
+    This will send messages to patients about their appointments.
+    """
+    try:
+        data = request.get_json()
+        appointments = data.get('appointments', [])
+        
+        if not appointments:
+            return jsonify({'success': False, 'message': 'No appointments provided'})
+        
+        # Check if this is a single patient reminder or bulk reminders
+        is_single_reminder = len(appointments) == 1
+        
+        # Send notifications to each patient
+        sent_count = 0
+        for appointment in appointments:
+            patient_id = appointment.get('id')
+            patient_name = appointment.get('name')
+            patient_contact = appointment.get('contact')
+            appointment_time = appointment.get('time')
+            risk_level = appointment.get('risk_level')
+            
+            # Prepare reminder message
+            if is_single_reminder:
+                # For individual reminders, use a more personalized message
+                reminder_message = f"Hello {patient_name}, this is a reminder about your upcoming appointment. It is scheduled for tomorrow at {appointment_time}. Please arrive 10 minutes early. Your priority level is {risk_level}. If you need to reschedule, please contact us as soon as possible."
+            else:
+                # Standard message for bulk reminders
+                reminder_message = f"Hello {patient_name}, this is a reminder that your appointment is scheduled for tomorrow at {appointment_time}. Please arrive 10 minutes early. Your priority level is {risk_level}."
+            
+            # Find the chat_id associated with this patient's contact number
+            found_chat = False
+            for chat_id, data in user_data.items():
+                if data.get('contact') == patient_contact:
+                    try:
+                        bot.send_message(chat_id, reminder_message)
+                        print(f"Reminder sent to {patient_name} via Telegram")
+                        sent_count += 1
+                        found_chat = True
+                    except Exception as e:
+                        print(f"Failed to send Telegram reminder to {patient_name}: {e}")
+                    break
+            
+            if not found_chat:
+                print(f"No Telegram chat found for patient {patient_name} with contact {patient_contact}")
+        
+        # Prepare appropriate success message
+        if is_single_reminder:
+            success_message = f"Sent reminder to {appointments[0].get('name')}"
+        else:
+            success_message = f"Sent {sent_count} notifications out of {len(appointments)} appointments"
+        
+        return jsonify({
+            'success': True, 
+            'message': success_message
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': f"Error: {str(e)}"})
+
+def run_bot():
     import socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -1149,3 +1322,17 @@ if __name__ == "__main__":
         print("ERROR: Another instance of this bot is already running!")
     finally:
         sock.close()
+
+if __name__ == "__main__":
+    import threading
+    
+    # Start the bot in a separate thread
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+    
+    # Run the Flask app
+    app.run(host='localhost', port=12346, debug=False)
+    
+    # Wait for the bot thread to finish
+    bot_thread.join()

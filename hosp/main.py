@@ -3,7 +3,7 @@ import os
 import json
 import mysql.connector
 import requests
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from flask import send_file
 
 
@@ -231,6 +231,118 @@ def notify():
     latest_notification['message'] = f"New {risk_level.lower()} appointment from {data['name']} for {problem}"
     latest_notification['status'] = True
     return jsonify({'success': True})
+
+@app.route('/send_appointment_reminders', methods=['POST'])
+def trigger_appointment_reminders():
+    """
+    Endpoint to trigger sending appointment reminders to patients with appointments tomorrow.
+    This assigns specific time slots to patients based on a 10-minute per patient schedule starting at 10 AM.
+    
+    If a patient_id is provided in the request, only send a reminder to that specific patient.
+    """
+    try:
+        # Connect to the database
+        conn = mysql.connector.connect(**mysql_config)
+        cursor = conn.cursor()
+        
+        # Check if a specific patient ID was provided
+        request_data = request.get_json(silent=True) or {}
+        specific_patient_id = request_data.get('patient_id')
+        
+        # Get tomorrow's date
+        tomorrow = (datetime.now() + timedelta(days=1)).strftime('%d-%m-%Y')
+        
+        if specific_patient_id:
+            # Query to get the specific patient's appointment
+            query = "SELECT id, name, contact, appointment_date, risk_level FROM appointments WHERE id = %s"
+            cursor.execute(query, (specific_patient_id,))
+            appointments = cursor.fetchall()
+            
+            if not appointments:
+                return jsonify({'success': False, 'message': f"No appointment found for patient ID {specific_patient_id}"})
+                
+            # Get the appointment date to check if it's for tomorrow
+            appointment_date = appointments[0][3]
+            if appointment_date != tomorrow:
+                # If not for tomorrow, we'll still send a reminder but note it in the message
+                date_message = f"Note: This appointment is scheduled for {appointment_date}, not tomorrow."
+            else:
+                date_message = ""
+        else:
+            # Query to get all appointments for tomorrow
+            query = "SELECT id, name, contact, appointment_date, risk_level FROM appointments WHERE appointment_date = %s ORDER BY points DESC"
+            cursor.execute(query, (tomorrow,))
+            appointments = cursor.fetchall()
+            
+            if not appointments:
+                return jsonify({'success': False, 'message': f"No appointments found for tomorrow ({tomorrow})"})
+            
+            date_message = ""
+            
+        # Start time at 10:00 AM
+        start_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0)
+        
+        # Assign time slots to each patient
+        assigned_appointments = []
+        for i, appointment in enumerate(appointments):
+            # Calculate appointment time (10 minutes per patient)
+            appointment_time = start_time + timedelta(minutes=i*10)
+            time_str = appointment_time.strftime('%I:%M %p')  # Format: 10:00 AM
+            
+            # Get patient details
+            patient_id = appointment[0]
+            patient_name = appointment[1]
+            patient_contact = appointment[2]
+            risk_level = appointment[4]
+            
+            # Update the database with the assigned time
+            try:
+                update_query = "UPDATE appointments SET appointment_time = %s WHERE id = %s"
+                cursor.execute(update_query, (time_str, patient_id))
+                conn.commit()
+                
+                assigned_appointments.append({
+                    'id': patient_id,
+                    'name': patient_name,
+                    'contact': patient_contact,
+                    'time': time_str,
+                    'risk_level': risk_level
+                })
+                
+            except Exception as e:
+                print(f"Failed to update appointment time in database: {e}")
+        
+        # Try to send notification to the Telegram bot service
+        try:
+            bot_response = requests.post("http://localhost:12346/send_notifications", 
+                                        json={'appointments': assigned_appointments}, 
+                                        timeout=5)
+            if bot_response.status_code == 200:
+                bot_message = "Notifications sent to Telegram bot service"
+            else:
+                bot_message = f"Failed to send to Telegram bot service: {bot_response.status_code}"
+        except Exception as e:
+            bot_message = f"Error connecting to Telegram bot service: {str(e)}"
+        
+        success_message = ""
+        if specific_patient_id:
+            success_message = f"Sent appointment reminder to {appointments[0][1]}. {date_message}"
+        else:
+            success_message = f"Assigned time slots to {len(assigned_appointments)} appointments for tomorrow"
+        
+        return jsonify({
+            'success': True, 
+            'message': success_message,
+            'bot_message': bot_message,
+            'appointments': assigned_appointments
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': f"Error: {str(e)}"})
+    finally:
+        if 'conn' in locals() and conn.is_connected():
+            cursor.close()
+            conn.close()
 
 @app.route('/check_notification', methods=['GET'])
 def check_notification():

@@ -34,6 +34,12 @@
 <h1 class="text-[var(--text-primary)] text-xl font-bold tracking-tight">AIxploria</h1>
 </div>
 <div class="hidden sm:flex flex-1 justify-end items-center gap-4">
+<button id="send-reminders-btn" class="flex items-center gap-2 bg-[var(--primary-color)] text-white px-4 py-2 rounded-lg hover:bg-opacity-90 transition-colors">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+<path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"></path>
+</svg>
+<span>Send Reminders</span>
+</button>
 <div class="flex items-center gap-2 text-[var(--primary-color)] font-bold">
 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
 <path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM40,56H216v32H40ZM216,200H40V104H216Z"></path>
@@ -79,7 +85,111 @@
 </div>
 <div class="bg-[var(--background-color)] rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col">
 <div class="p-5 flex-grow">
+<!-- Notification container -->
+<div id="notification" class="fixed top-4 right-4 z-50 max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg transform transition-transform duration-300 translate-y-[-100%] opacity-0">
+  <div class="p-4 flex items-start">
+    <div id="notification-icon" class="flex-shrink-0 w-6 h-6 mr-3"></div>
+    <div class="flex-1">
+      <h3 id="notification-title" class="text-sm font-medium text-gray-900"></h3>
+      <div id="notification-message" class="mt-1 text-sm text-gray-500"></div>
+    </div>
+    <button type="button" onclick="hideNotification()" class="flex-shrink-0 ml-4 text-gray-400 hover:text-gray-500">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
 <script>
+  // Notification functions
+  function showNotification(type, title, message) {
+    const notification = document.getElementById('notification');
+    const notificationTitle = document.getElementById('notification-title');
+    const notificationMessage = document.getElementById('notification-message');
+    const notificationIcon = document.getElementById('notification-icon');
+    
+    // Set content
+    notificationTitle.textContent = title;
+    notificationMessage.textContent = message;
+    
+    // Set icon and colors based on type
+    if (type === 'success') {
+      notificationIcon.innerHTML = '<svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>';
+    } else if (type === 'error') {
+      notificationIcon.innerHTML = '<svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
+    } else if (type === 'loading') {
+      notificationIcon.innerHTML = '<svg class="w-6 h-6 text-blue-500 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    }
+    
+    // Show notification
+    notification.classList.remove('translate-y-[-100%]', 'opacity-0');
+    notification.classList.add('translate-y-0', 'opacity-100');
+    
+    // Auto-hide after 5 seconds for success and error notifications
+    if (type !== 'loading') {
+      setTimeout(hideNotification, 5000);
+    }
+  }
+  
+  function hideNotification() {
+    const notification = document.getElementById('notification');
+    notification.classList.remove('translate-y-0', 'opacity-100');
+    notification.classList.add('translate-y-[-100%]', 'opacity-0');
+  }
+  
+  // Send appointment reminders function
+  function sendAppointmentReminders() {
+    const button = document.getElementById('send-reminders-btn');
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Sending...';
+    
+    // Show loading notification
+    showNotification('loading', 'Sending Reminders', 'Processing appointment reminders...');
+    
+    // Make API call to send reminders
+    fetch('/send_appointment_reminders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Reset button state
+      button.disabled = false;
+      button.innerHTML = originalText;
+      
+      // Show success notification
+      if (data.success) {
+        showNotification('success', 'Reminders Sent', data.message);
+      } else {
+        showNotification('error', 'Error', data.message || 'Failed to send reminders');
+      }
+    })
+    .catch(error => {
+      // Reset button state
+      button.disabled = false;
+      button.innerHTML = originalText;
+      
+      // Show error notification
+      showNotification('error', 'Error', 'Failed to send reminders. Please try again.');
+      console.error('Error sending reminders:', error);
+    });
+  }
+  
+  // Add event listener to the send reminders button
+  document.addEventListener('DOMContentLoaded', function() {
+    const sendRemindersBtn = document.getElementById('send-reminders-btn');
+    if (sendRemindersBtn) {
+      sendRemindersBtn.addEventListener('click', sendAppointmentReminders);
+    }
+  });
+  
   fetch('../data.json')
   .then(response => response.json())
   .then(data => {
